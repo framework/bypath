@@ -1,0 +1,28 @@
+{
+  "name": "framework",
+  "version": "0.0.0-reborn",
+  "description": "Framework for TypeScript applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/framework/framework.git"
+  },
+  "keywords": [
+    "react",
+    "effector",
+    "feature",
+    "slices",
+    "typescript",
+    "framework",
+    "plugins"
+  ],
+  "author": "Sergey Sova <mail@sergeysova.com> (https://github.com/framework)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/framework/framework/issues"
+  },
+  "homepage": "https://github.com/framework/framework#readme"
+}
