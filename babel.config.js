@@ -28,7 +28,9 @@ const common = {
     '@babel/plugin-proposal-optional-chaining',
     '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-transform-react-constant-elements',
-    'effector/babel-plugin',
+    ['effector/babel-plugin', {
+      factories: ['hatch', 'navigation', 'app'],
+    }],
   ],
   overrides: [
     {

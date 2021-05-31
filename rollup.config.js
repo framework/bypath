@@ -1,8 +1,8 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
+import commonjs from '@rollup/plugin-commonjs';
 import dts from 'rollup-plugin-dts';
+import resolve from '@rollup/plugin-node-resolve';
+import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json';
 import { minifyConfig } from './build/minification';
@@ -18,10 +18,13 @@ const babelPlugin = babel({
   exclude: /node_modules.*/,
 });
 
-const createTerser = ({ inline }) => terser(minifyConfig({
-  beautify: Boolean(process.env.BUILD_PRETTY),
-  inline,
-}));
+const createTerser = ({ inline }) =>
+  terser(
+    minifyConfig({
+      beautify: Boolean(process.env.BUILD_PRETTY),
+      inline,
+    }),
+  );
 
 const input = 'src/index.ts';
 const external = [...Object.keys(pkg.devDependencies), ...Object.keys(pkg.dependencies)];
@@ -30,16 +33,32 @@ const external = [...Object.keys(pkg.devDependencies), ...Object.keys(pkg.depend
 export default [
   {
     input,
-    external,
+    external: [
+      '@loadable/component',
+      'effector',
+      'history',
+      'hoist-non-react-statics',
+      'react',
+      'react-router',
+      'react-router-config',
+      'react-router-dom',
+      'patronum',
+    ],
     output: {
-      name: 'reflectForm',
+      name: 'framework',
       file: pkg.browser,
       format: 'umd',
       sourcemap: true,
       globals: {
+        '@loadable/component': 'loadable',
+        'hoist-non-react-statics': 'hoistNonReactStatics',
+        'react-router': 'ReactRouter',
+        'react-router-config': 'ReactRouterConfig',
+        'react-router-dom': 'ReactRouterDOM',
         effector: 'effector',
+        history: 'History',
         react: 'react',
-        '@effector/reflect': 'effectorReflect',
+        patronum: 'patronum',
       },
     },
     plugins: [babelPlugin, resolverPlugin, commonjs(), createTerser({ inline: false })],
