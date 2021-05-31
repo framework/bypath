@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/node,windows,macos,linux
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,windows,macos,linux
+# Created by https://www.toptal.com/developers/gitignore/api/node,windows,macos,linux,idea
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,windows,macos,linux,idea
 
 ### Linux ###
 *~
@@ -24,7 +24,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -135,6 +136,14 @@ typings/
 .nuxt
 dist
 
+# Storybook build outputs
+.out
+.storybook-out
+storybook-static
+
+# rollup.js default build output
+dist/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
@@ -158,6 +167,10 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+# Temporary folders
+tmp/
+temp/
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -185,4 +198,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/node,windows,macos,linux
+# End of https://www.toptal.com/developers/gitignore/api/node,windows,macos,linux,idea
+
+.idea
