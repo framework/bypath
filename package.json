@@ -1,6 +1,6 @@
 {
   "name": "framework",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Framework for TypeScript applications",
   "main": "dist/framework.cjs.js",
   "module": "dist/framework.esm.js",
