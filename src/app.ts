@@ -1,12 +1,19 @@
-import { Event, combine, createEffect, createEvent, createStore, forward, guard } from 'effector';
+import { Domain, Event, combine, forward, guard } from 'effector';
 import { RouteConfig, matchRoutes } from 'react-router-config';
 import { splitMap } from 'patronum';
 
 import { HatchParams, getHatch } from './hatch';
 import { createNavigation } from './navigation';
+import { defaultDomain } from './default-domain';
 
-export function createBrowserApplication(config: { ready: Event<void>; routes: RouteConfig[] }) {
-  const navigation = createNavigation();
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function createBrowserApplication(config: {
+  ready: Event<void>;
+  routes: RouteConfig[];
+  domain?: Domain;
+}) {
+  const domain = config.domain || defaultDomain;
+  const navigation = createNavigation(domain);
   forward({ from: config.ready, to: navigation.historyEmitCurrent });
 
   const routesMatched = navigation.historyChanged.map((change) => ({
@@ -41,17 +48,18 @@ export function createBrowserApplication(config: { ready: Event<void>; routes: R
       },
     });
 
-    const hatchEnter = createEvent<HatchParams>();
-    const hatchUpdate = createEvent<HatchParams>();
-    const hatchExit = createEvent<void>();
+    const hatchEnter = domain.createEvent<HatchParams>();
+    const hatchUpdate = domain.createEvent<HatchParams>();
+    const hatchExit = domain.createEvent<void>();
 
     // Triggered when hatch is used from the main bundle
-    const dontNeedLoadChunk = createEvent();
+    const dontNeedLoadChunk = domain.createEvent();
 
-    const $chunkLoaded = createStore(false);
-    const $hasHatch = createStore(getHatch(component) !== undefined);
+    const $chunkLoaded = domain.createStore(false);
+    const $hasHatch = domain.createStore(getHatch(component) !== undefined);
 
-    const loadPageFx = createEffect(async () => {
+    const loadPageFx = domain.createEffect(async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const loader = (component as any).load;
       if (typeof loader === 'function') {
         const module = await loader();
@@ -65,7 +73,8 @@ export function createBrowserApplication(config: { ready: Event<void>; routes: R
       return component;
     });
 
-    const setupHatchLinksFx = createEffect((page: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupHatchLinksFx = domain.createEffect((page: any) => {
       const hatch = getHatch(page);
       if (hatch) {
         forward({ from: hatchEnter, to: hatch.enter });
@@ -77,13 +86,15 @@ export function createBrowserApplication(config: { ready: Event<void>; routes: R
     });
 
     // Shows that user is on the route
-    const $onRoute = createStore(false)
+    const $onRoute = domain
+      .createStore(false)
       .on(routeMatched, () => true)
       .on(notMatched, () => false);
 
     // Shows that user visited route and wait for page
     // If true, page.hatch.enter is triggered and logic is ran
-    const $onPage = createStore(false)
+    const $onPage = domain
+      .createStore(false)
       .on(hatchEnter, () => true)
       .on(hatchExit, () => false);
 

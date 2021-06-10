@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Event, Store, combine, createEvent, createStore } from 'effector';
+import { Domain, Event, Store, combine } from 'effector';
 import { MatchedRoute } from 'react-router-config';
+
+import { defaultDomain } from './default-domain';
 
 const HATCH = 'framework/page-hatch';
 
@@ -30,15 +32,15 @@ export interface Hatch {
  * Stores is derived from this events and holds specific parameters
  * `$opened` holds current state of page, if user visited page but not left, it is `true`
  */
-export function createHatch(): Hatch {
-  const $opened = createStore(false);
-  const $params = createStore<Record<string, string>>({});
-  const $query = createStore<Record<string, string>>({});
+export function createHatch(domain: Domain = defaultDomain): Hatch {
+  const $opened = domain.createStore(false);
+  const $params = domain.createStore<Record<string, string>>({});
+  const $query = domain.createStore<Record<string, string>>({});
 
   const hatch = {
-    enter: createEvent<HatchParams>(),
-    update: createEvent<HatchParams>(),
-    exit: createEvent<void>(),
+    enter: domain.createEvent<HatchParams>(),
+    update: domain.createEvent<HatchParams>(),
+    exit: domain.createEvent<void>(),
     $opened,
     $params,
     $query,
@@ -56,16 +58,20 @@ export function createHatch(): Hatch {
 }
 
 export function withHatch<C extends React.ComponentType>(hatch: Hatch, component: C): C {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (component as any)[HATCH] = hatch;
   return component;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getHatch<T extends React.ComponentType<any>>(component: T): Hatch | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (component as any)[HATCH];
 }
 
 export function lookupHatch<P>(match: MatchedRoute<P>): Hatch | undefined {
   if (match.route.component) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return getHatch(match.route.component as any);
   }
 }
