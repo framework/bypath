@@ -1,5 +1,5 @@
+import { Domain, sample } from 'effector';
 import { createBrowserHistory } from 'history';
-import { createEffect, createEvent, sample } from 'effector';
 
 export interface HistoryChange {
   pathname: string;
@@ -8,16 +8,16 @@ export interface HistoryChange {
   action: 'PUSH' | 'POP' | 'REPLACE';
 }
 
-export function createNavigation() {
+export function createNavigation(domain: Domain) {
   const history = typeof document !== 'undefined' ? createBrowserHistory() : null;
 
-  const historyPush = createEffect<string, void>();
-  const historyPushSearch = createEffect<string, void>();
-  const historyReplace = createEffect<string, void>();
+  const historyPush = domain.createEffect<string, void>();
+  const historyPushSearch = domain.createEffect<string, void>();
+  const historyReplace = domain.createEffect<string, void>();
 
-  const historyChanged = createEvent<HistoryChange>();
+  const historyChanged = domain.createEvent<HistoryChange>();
 
-  const historyEmitCurrent = createEvent();
+  const historyEmitCurrent = domain.createEvent();
 
   if (process.env.NODE_ENV !== 'test') {
     historyPush.use((url) => history?.push(url));
