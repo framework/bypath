@@ -4,7 +4,7 @@
   "description": "Framework for TypeScript applications",
   "main": "dist/framework.cjs.js",
   "module": "dist/framework.esm.js",
-  "browser": "dist/framework.umd.js",
+  "unpkg": "dist/framework.umd.js",
   "types": "dist/framework.d.ts",
   "sideEffects": false,
   "scripts": {
