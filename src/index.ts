@@ -5,6 +5,8 @@ export { createBrowserApplication } from './app';
 export { createHatch, getHatch, withHatch, lookupHatch } from './hatch';
 export type { Hatch, HatchParams } from './hatch';
 
+export { contract } from './contract';
+
 export const createPages = (routes: RouteConfig[]) => renderRoutes(routes);
 
 export { loadable };
