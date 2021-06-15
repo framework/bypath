@@ -13,19 +13,17 @@ npm install framework
 ```ts
 // index.ts
 import { createBrowserApplication } from 'framework';
-import { createDomain, createEvent } from 'effector';
+import { createEvent } from 'effector';
 
 import * as navigation from 'entities/navigation';
 import { routes } from './pages';
 
 const applicationLoaded = createEvent()
 
-const root = createDomain()
-
 const app = createBrowserApplication({
   routes,
   ready: applicationLoaded,
-  domain: root
+  domain: navigation.navigationDomain
   // domain is optional
   // for debug/logging
 });
@@ -47,24 +45,33 @@ forward({
 ```
 
 ```ts
-// some-page.ts
+// some-page/contract.ts
+import { createHatch } from 'framework';
+
+import { navigationDomain } from 'entities/navigation';
+
+export const hatch = createHatch(navigationDomain);
+// domain is optional
+// for debug/logging
+```
+
+```ts
+// some-page/index.tsx
 import { guard, createDomain } from 'effector';
-import { createHatch, withHatch } from 'framework';
+import { withHatch } from 'framework';
 
 import { historyPush } from 'entities/navigation';
 import { $isAuthenticated } from 'entities/session';
 
-const hatch = createHatch(createDomain())
-// domain is optional
-// for debug/logging
+import { hatch } from './contract';
 
-const Page = withHatch(hatch, () => {
+export const Page = withHatch(hatch, () => {
   //...
-})
+});
 
 guard({
   source: hatch.enter,
   filter: $isAuthenticated.map((is) => !is),
   target: historyPush.prepend(() => '/login')
-})
+});
 ```
