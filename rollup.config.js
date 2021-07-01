@@ -46,7 +46,7 @@ export default [
     ],
     output: {
       name: 'framework',
-      file: pkg.browser,
+      file: pkg.unpkg,
       format: 'umd',
       sourcemap: true,
       globals: {
