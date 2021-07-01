@@ -16,16 +16,12 @@ export function createBrowserApplication(config: {
   const navigation = createNavigation(domain);
   forward({ from: config.ready, to: navigation.historyEmitCurrent });
 
-  const routesMatched = navigation.historyChanged.map((change) => ({
-    routes: matchRoutes(config.routes, change.pathname),
-    change,
-  }));
+  const routeResolved = navigation.historyChanged.filterMap((change) => {
+    const routes = matchRoutes(config.routes, change.pathname);
 
-  const routeResolved = routesMatched.filterMap(({ routes, change }) => {
-    const found = routes.find((route) => route.route.path === change.pathname);
-    if (found) {
+    if (routes.length > 0) {
       return {
-        ...found,
+        ...routes[0],
         change,
       };
     }
