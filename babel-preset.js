@@ -4,9 +4,10 @@ module.exports = function () {
       [
         'effector/babel-plugin',
         {
-          factories: ['framework'],
+          noDefaults: true,
+          importName: 'framework',
         },
-        'framework/effector',
+        'framework',
       ],
     ],
   };

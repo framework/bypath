@@ -28,10 +28,27 @@ const common = {
     '@babel/plugin-proposal-optional-chaining',
     '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-transform-react-constant-elements',
-    ['effector/babel-plugin', {
-      factories: ['hatch', 'navigation', 'app'],
-    }],
+    [
+      'effector/babel-plugin',
+      {
+        factories: ['hatch', 'navigation', 'app', 'index'],
+      },
+    ],
   ],
+  env: {
+    test: {
+      presets: [
+        [
+          '@babel/env',
+          {
+            loose: true,
+            shippedProposals: true,
+          },
+        ],
+      ],
+      plugins: ['@babel/transform-runtime'],
+    },
+  },
   overrides: [
     {
       test(filename) {
