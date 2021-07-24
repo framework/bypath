@@ -1,7 +1,7 @@
 import loadable from '@loadable/component';
 import { RouteConfig, renderRoutes } from 'react-router-config';
 
-export { createBrowserApplication } from './app';
+export { createBrowserApplication } from './browser-application';
 export { createHatch, getHatch, withHatch, lookupHatch } from './hatch';
 export type { Hatch, HatchParams } from './hatch';
 
