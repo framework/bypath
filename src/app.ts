@@ -86,6 +86,7 @@ export function createBrowserApplication(config: {
           // Refork here?
           // Because computations still in the old scope, we can't switch to a new scope where page's events already forked
           // We need effector v22
+          // https://share.effector.dev/HEXzaOU0
           return true;
         }
         return false;
@@ -124,6 +125,14 @@ export function createBrowserApplication(config: {
       source: loadPageFx.doneData,
       filter: (value) => value !== null,
       target: setupHatchLinksFx,
+    });
+
+    loadPageFx.failData.watch((error) => {
+      console.error(`Failed to load page for ${path}`, error);
+    });
+
+    setupHatchLinksFx.failData.watch((error) => {
+      console.error(`Failed to setup hatch links for ${path}`, error);
     });
 
     // Hatch found on component from route, but chunk never loaded
