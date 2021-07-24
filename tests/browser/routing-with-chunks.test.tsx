@@ -1,5 +1,5 @@
 import React from 'react';
-import { Effect, Event, Store, allSettled, createEvent, fork, serialize } from 'effector';
+import { allSettled, fork } from 'effector';
 
 import { $pageName, root } from './fixtures/internal';
 import { createBrowserApplication, loadable } from '../../src';
