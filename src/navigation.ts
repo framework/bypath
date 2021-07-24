@@ -1,5 +1,5 @@
 import { Domain, sample } from 'effector';
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory, createMemoryHistory } from 'history';
 
 export interface HistoryChange {
   pathname: string;
@@ -9,7 +9,7 @@ export interface HistoryChange {
 }
 
 export function createNavigation(domain: Domain) {
-  const history = typeof document !== 'undefined' ? createBrowserHistory() : null;
+  const history = typeof document !== 'undefined' ? createBrowserHistory() : createMemoryHistory();
 
   const historyPush = domain.createEffect<string, void>();
   const historyPushSearch = domain.createEffect<string, void>();
@@ -19,28 +19,26 @@ export function createNavigation(domain: Domain) {
 
   const historyEmitCurrent = domain.createEvent();
 
-  if (process.env.NODE_ENV !== 'test') {
-    historyPush.use((url) => history?.push(url));
-    historyReplace.use((url) => history?.replace(url));
-    historyPushSearch.use((search) => history?.push({ search }));
+  // do not actual change history, just trigger history changed with correct arguments
+  sample({
+    clock: historyEmitCurrent,
+    fn: () =>
+      ({
+        action: 'REPLACE',
+        hash: history.location.hash,
+        pathname: history.location.pathname,
+        search: history.location.search,
+      } as HistoryChange),
+    target: historyChanged,
+  });
 
-    history?.listen(({ pathname, search, hash }, action) => {
-      historyChanged({ pathname, search, hash, action });
-    });
+  historyPush.use((url) => history.push(url));
+  historyReplace.use((url) => history.replace(url));
+  historyPushSearch.use((search) => history.push({ search }));
 
-    // do not actual change history, just trigger history changed with correct arguments
-    sample({
-      source: historyEmitCurrent,
-      fn: () =>
-        ({
-          action: 'REPLACE',
-          hash: history?.location.hash,
-          pathname: history?.location.pathname,
-          search: history?.location.search,
-        } as HistoryChange),
-      target: historyChanged,
-    });
-  }
+  history.listen(({ pathname, search, hash }, action) => {
+    historyChanged({ pathname, search, hash, action });
+  });
 
   return {
     history,

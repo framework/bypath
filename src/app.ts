@@ -44,53 +44,61 @@ export function createBrowserApplication(config: {
       },
     });
 
-    const hatchEnter = domain.createEvent<HatchParams>();
-    const hatchUpdate = domain.createEvent<HatchParams>();
-    const hatchExit = domain.createEvent<void>();
+    const hatchEnter = domain.createEvent<HatchParams>({ name: `hatchEnter:${path}` });
+    const hatchUpdate = domain.createEvent<HatchParams>({ name: `hatchUpdate:${path}` });
+    const hatchExit = domain.createEvent<void>({ name: `hatchExit:${path}` });
 
     // Triggered when hatch is used from the main bundle
-    const dontNeedLoadChunk = domain.createEvent();
+    const dontNeedLoadChunk = domain.createEvent({ name: `dontNeedLoadChunk:${path}` });
 
-    const $chunkLoaded = domain.createStore(false);
-    const $hasHatch = domain.createStore(getHatch(component) !== undefined);
+    const $chunkLoaded = domain.createStore(false, { name: `$chunkLoaded:${path}` });
+    const $hasHatch = domain.createStore(getHatch(component) !== undefined, {
+      name: `$hasHatch:${path}`,
+    });
 
-    const loadPageFx = domain.createEffect(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const loader = (component as any).load;
-      if (typeof loader === 'function') {
-        const module = await loader();
-        if (!module.default) {
-          console.info(`Not found default export for "${path}" route`);
-          return null;
+    const loadPageFx = domain.createEffect({
+      name: `loadPageFx:${path}`,
+      handler: async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const loader = (component as any).load;
+        if (typeof loader === 'function') {
+          const module = await loader();
+          if (!module.default) {
+            console.info(`Not found default export for "${path}" route`);
+            return null;
+          }
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          return module.default as {};
         }
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        return module.default as {};
-      }
-      return component;
+        return component;
+      },
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setupHatchLinksFx = domain.createEffect((page: any) => {
-      const hatch = getHatch(page);
-      if (hatch) {
-        forward({ from: hatchEnter, to: hatch.enter });
-        forward({ from: hatchUpdate, to: hatch.update });
-        forward({ from: hatchExit, to: hatch.exit });
-        return true;
-      }
-      return false;
+    const setupHatchLinksFx = domain.createEffect({
+      name: `setupHatchLinksFx:${path}`,
+      handler: (page: any) => {
+        const hatch = getHatch(page);
+        if (hatch) {
+          forward({ from: hatchEnter, to: hatch.enter });
+          forward({ from: hatchUpdate, to: hatch.update });
+          forward({ from: hatchExit, to: hatch.exit });
+          return true;
+        }
+        return false;
+      },
     });
 
     // Shows that user is on the route
     const $onRoute = domain
-      .createStore(false)
+      .createStore(false, { name: `$onRoute:${path}` })
       .on(routeMatched, () => true)
       .on(notMatched, () => false);
 
     // Shows that user visited route and wait for page
     // If true, page.hatch.enter is triggered and logic is ran
     const $onPage = domain
-      .createStore(false)
+      .createStore(false, { name: `$onPage:${path}` })
       .on(hatchEnter, () => true)
       .on(hatchExit, () => false);
 

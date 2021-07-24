@@ -1,15 +1,13 @@
 import React from 'react';
-import { createDomain } from 'effector';
+import { createEvent } from 'effector';
 
 import { createBrowserApplication, createHatch, withHatch } from '../../src';
 
 test('check triggering hatch without binding to domain', () => {
-  const domain = createDomain();
-
-  const homePageHatch = createHatch(domain);
+  const homePageHatch = createHatch();
   const HomePage = withHatch(homePageHatch, () => <div>Home page</div>);
 
-  const notFoundPageHatch = createHatch(domain);
+  const notFoundPageHatch = createHatch();
   const NotFoundPage = withHatch(notFoundPageHatch, () => <span>Not found</span>);
   const routes = [
     {
@@ -23,10 +21,9 @@ test('check triggering hatch without binding to domain', () => {
     },
   ];
 
-  const ready = domain.createEvent();
+  const ready = createEvent();
 
   const app = createBrowserApplication({
-    domain,
     ready,
     routes,
   });
