@@ -82,7 +82,7 @@
     "babel-jest": "^27.0.6",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
-    "effector": "^21.8.11",
+    "effector": "^21.8.12",
     "eslint": "7.10.0",
     "history": "^4.9.0",
     "husky": "^6.0.0",

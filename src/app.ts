@@ -1,4 +1,4 @@
-import { Domain, Event, combine, forward, guard } from 'effector';
+import { Domain, Event, combine, forward, guard, scopeBind } from 'effector';
 import { RouteConfig, matchRoutes } from 'react-router-config';
 import { splitMap } from 'patronum';
 
@@ -83,6 +83,9 @@ export function createBrowserApplication(config: {
           forward({ from: hatchEnter, to: hatch.enter });
           forward({ from: hatchUpdate, to: hatch.update });
           forward({ from: hatchExit, to: hatch.exit });
+          // Refork here?
+          // Because computations still in the old scope, we can't switch to a new scope where page's events already forked
+          // We need effector v22
           return true;
         }
         return false;
