@@ -1,4 +1,4 @@
-import { Domain, Event, combine, forward, guard, scopeBind } from 'effector';
+import { Domain, Event, combine, forward, guard } from 'effector';
 import { RouteConfig, matchRoutes } from 'react-router-config';
 import { splitMap } from 'patronum';
 
@@ -13,7 +13,7 @@ export function createBrowserApplication(config: {
   domain?: Domain;
 }) {
   const domain = config.domain || defaultDomain;
-  const navigation = createNavigation(domain);
+  const navigation = createNavigation(domain, { emitHistory: true });
   forward({ from: config.ready, to: navigation.historyEmitCurrent });
 
   const routeResolved = navigation.historyChanged.filterMap((change) => {
@@ -29,6 +29,12 @@ export function createBrowserApplication(config: {
 
   for (const { component, path } of config.routes) {
     if (!component) return;
+    if ((component as any).load) {
+      throw new Error(
+        `[${path}] lazy components temporary is not supported. Please, remove loadable() call`,
+      );
+    }
+
     const { routeMatched, __: notMatched } = splitMap({
       source: routeResolved,
       cases: {
