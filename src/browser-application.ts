@@ -28,7 +28,7 @@ export function createBrowserApplication(config: {
   });
 
   for (const { component, path } of config.routes) {
-    if (!component) return;
+    if (!component) continue;
     if ((component as any).load) {
       throw new Error(
         `[${path}] lazy components temporary is not supported. Please, remove loadable() call`,
@@ -41,7 +41,11 @@ export function createBrowserApplication(config: {
         routeMatched: ({ route, match, change }) => {
           if (route.path === path) {
             return {
-              params: match.params, // /user/:userId -> /user/123 -> { userId: 123 }
+              // route.path contains params, like /user/:userId
+              // :userId is a param
+              // match.params contains parsed params values
+              // /user/123 will be parsed as { userId: 123 }
+              params: match.params,
               query: Object.fromEntries(new URLSearchParams(change.search)),
             };
           }

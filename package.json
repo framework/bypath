@@ -36,7 +36,8 @@
   },
   "homepage": "https://github.com/framework/framework#readme",
   "dependencies": {
-    "@loadable/component": "^5.15.0"
+    "@loadable/component": "^5.15.0",
+    "debug": "^4.3.2"
   },
   "peerDependencies": {
     "effector": "^21.8.0",
@@ -69,6 +70,7 @@
     "@testing-library/dom": "^7.31.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
+    "@types/debug": "^4.1.7",
     "@types/history": "^4.7.8",
     "@types/jest": "^26.0.24",
     "@types/loadable__component": "^5.13.3",
