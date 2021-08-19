@@ -5,7 +5,7 @@ module.exports = function () {
         'effector/babel-plugin',
         {
           noDefaults: true,
-          importName: 'framework',
+          factories: ['framework'],
         },
         'framework',
       ],
