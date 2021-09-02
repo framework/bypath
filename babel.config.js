@@ -1,26 +1,4 @@
-const presets = [
-  [
-    '@babel/preset-env',
-    {
-      loose: true,
-      useBuiltIns: 'entry',
-      corejs: 3,
-      modules: false,
-      shippedProposals: true,
-      targets: {
-        node: '10',
-        browsers: [
-          'last 2 Chrome versions',
-          'last 2 Firefox versions',
-          'last 2 Safari versions',
-          'last 1 Edge versions',
-        ],
-      },
-    },
-  ],
-  '@babel/preset-react',
-  '@babel/preset-typescript',
-];
+const presets = ['@babel/preset-react', '@babel/preset-typescript'];
 
 const common = {
   presets,
@@ -34,11 +12,57 @@ const common = {
   ],
   overrides: [
     {
-      test(_filename, { envName }) {
+      test(filename, { envName }) {
         return envName === 'test';
       },
       plugins: ['@babel/plugin-transform-runtime'],
-      presets: [['@babel/preset-env', { modules: 'commonjs', loose: true }]],
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            loose: true,
+            useBuiltIns: 'entry',
+            corejs: 3,
+            modules: 'commonjs',
+            shippedProposals: true,
+            targets: {
+              node: '10',
+              browsers: [
+                'last 2 Chrome versions',
+                'last 2 Firefox versions',
+                'last 2 Safari versions',
+                'last 1 Edge versions',
+              ],
+            },
+          },
+        ],
+      ],
+    },
+    {
+      test(_filename, { envName }) {
+        return envName !== 'test';
+      },
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            loose: true,
+            useBuiltIns: 'entry',
+            corejs: 3,
+            modules: false,
+            shippedProposals: true,
+            targets: {
+              node: '10',
+              browsers: [
+                'last 2 Chrome versions',
+                'last 2 Firefox versions',
+                'last 2 Safari versions',
+                'last 1 Edge versions',
+              ],
+            },
+          },
+        ],
+      ],
     },
     {
       test(filename) {

@@ -41,7 +41,7 @@
     "debug": "^4.3.2"
   },
   "peerDependencies": {
-    "effector": "^21.8.0",
+    "effector": "^22.0.6",
     "history": "^4.9.0",
     "patronum": "^1.1.0",
     "react": "^16.14.0",
@@ -88,7 +88,6 @@
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "effector": "^22.0.6",
-    "effector-react": "^22.0.4",
     "eslint": "7.10.0",
     "history": "^4.9.0",
     "husky": "^6.0.0",
