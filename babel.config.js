@@ -1,53 +1,48 @@
-const common = {
-  presets: [
-    [
-      '@babel/env',
-      {
-        loose: true,
-        useBuiltIns: 'entry',
-        corejs: 3,
-        modules: false,
-        shippedProposals: true,
-        targets: {
-          node: '10',
-          browsers: [
-            'last 2 Chrome versions',
-            'last 2 Firefox versions',
-            'last 2 Safari versions',
-            'last 1 Edge versions',
-          ],
-        },
-      },
-    ],
-    '@babel/preset-react',
-    '@babel/typescript',
-  ],
-  plugins: [
-    'effector/babel-plugin',
-    // ['@babel/plugin-proposal-class-properties', { loose: true }],
-    // '@babel/plugin-proposal-object-rest-spread',
-    // '@babel/plugin-proposal-optional-chaining',
-    // '@babel/plugin-proposal-nullish-coalescing-operator',
-    // '@babel/plugin-transform-react-constant-elements',
-  ],
-  env: {
-    test: {
-      presets: [
-        [
-          '@babel/env',
-          {
-            loose: true,
-            shippedProposals: true,
-          },
+const presets = [
+  [
+    '@babel/preset-env',
+    {
+      loose: true,
+      useBuiltIns: 'entry',
+      corejs: 3,
+      modules: false,
+      shippedProposals: true,
+      targets: {
+        node: '10',
+        browsers: [
+          'last 2 Chrome versions',
+          'last 2 Firefox versions',
+          'last 2 Safari versions',
+          'last 1 Edge versions',
         ],
-      ],
-      plugins: ['@babel/transform-runtime'],
+      },
     },
-  },
+  ],
+  '@babel/preset-react',
+  '@babel/preset-typescript',
+];
+
+const common = {
+  presets,
+  plugins: [
+    ['effector/babel-plugin', { factories: ['src/contract'] }],
+    ['@babel/plugin-proposal-class-properties', { loose: true }],
+    '@babel/plugin-proposal-object-rest-spread',
+    '@babel/plugin-proposal-optional-chaining',
+    '@babel/plugin-proposal-nullish-coalescing-operator',
+    '@babel/plugin-transform-react-constant-elements',
+  ],
   overrides: [
     {
+      test(_filename, { envName }) {
+        return envName === 'test';
+      },
+      plugins: ['@babel/plugin-transform-runtime'],
+      presets: [['@babel/preset-env', { modules: 'commonjs', loose: true }]],
+    },
+    {
       test(filename) {
-        return filename && (filename.endsWith('.tsx') || filename.endsWith('.ts'));
+        return filename?.endsWith('.tsx') || filename?.endsWith('.ts');
       },
       presets: [
         [
