@@ -8,7 +8,7 @@ import {
   forward,
 } from 'effector';
 
-import { contract } from './index';
+import { contract } from '../src/contract';
 
 test('events forwarded from page to model', () => {
   const fnPage = jest.fn();
@@ -85,24 +85,30 @@ test('set initial state inside scope', () => {
 
 test('event from a page changes state of the model', async () => {
   const app = createDomain();
-  const model = (() => {
-    const happened = app.createEvent();
-    const $counter = app.createStore(1);
-    const effect = app.createEffect(
-      (value: number) => new Promise<number>((resolve) => setTimeout(resolve, 5, value + 1)),
-    );
-    const changer = attach({ source: $counter, effect });
-    forward({
-      from: happened,
-      to: changer,
-    });
-    $counter.on(changer.doneData, (_, value) => value);
-    return { happened, $counter };
-  })();
+
+  const happened = app.createEvent();
+  const $counter = app.createStore(1);
+  const effect = app.createEffect(
+    (value: number) => new Promise<number>((resolve) => setTimeout(resolve, 5, value + 1)),
+  );
+
+  const changer = attach({
+    source: $counter,
+    effect,
+    mapParams: (_: void, state) => state,
+  });
+  forward({
+    from: happened,
+    to: changer,
+  });
+  $counter.on(changer.doneData, (_, value) => value);
+
+  const model = { $counter, happened };
+
   const page = { happened: app.createEvent(), $counter: app.createStore(0) };
   contract({ page, model });
-  const scope = fork(app);
 
+  const scope = fork(app);
   await allSettled(page.happened, { scope });
 
   expect(scope.getState(page.$counter)).toBe(2);
