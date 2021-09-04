@@ -33,7 +33,7 @@ export interface Hatch {
  * `$opened` holds current state of page, if user visited page but not left, it is `true`
  */
 export function createHatch(domain: Domain = defaultDomain): Hatch {
-  const $opened = domain.createStore(false);
+  const $opened = domain.createStore(Boolean(false));
   const $params = domain.createStore<Record<string, string>>({});
   const $query = domain.createStore<Record<string, string>>({});
 
@@ -50,7 +50,7 @@ export function createHatch(domain: Domain = defaultDomain): Hatch {
   $params.on([hatch.enter, hatch.update], (_, { params }) => params);
   $query.on([hatch.enter, hatch.update], (_, { query }) => query);
 
-  hatch.$opened.on(hatch.enter, () => true).on(hatch.exit, () => false);
+  hatch.$opened.on(hatch.enter, () => Boolean(true)).on(hatch.exit, () => Boolean(false));
   // Developer may want to read props when user leaves the page
   // if $opened store will reset on hatch.exit, data will be deleted
 
