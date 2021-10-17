@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Domain, Event, Store, combine } from 'effector';
+import { Domain, Event, Store, combine, is } from 'effector';
 import { MatchedRoute } from 'react-router-config';
 
 import { defaultDomain } from './default-domain';
@@ -27,20 +27,40 @@ export interface Hatch {
   $props: Store<HatchParams>;
 }
 
+interface Config {
+  enter: Event<HatchParams>;
+  update: Event<HatchParams>;
+  exit: Event<void>;
+  domain?: Domain;
+}
+
 /**
  * Events here is an input signal, history should call them when route enters, updates, and exits.
  * Stores is derived from this events and holds specific parameters
  * `$opened` holds current state of page, if user visited page but not left, it is `true`
  */
-export function createHatch(domain: Domain = defaultDomain): Hatch {
+export function createHatch(config_: Config | Domain = defaultDomain): Hatch {
+  let domain;
+  let config: Partial<Config>;
+  if (is.domain(config_)) {
+    domain = config_;
+    config = {};
+  } else if (is.domain(config_.domain)) {
+    domain = config_.domain;
+    config = config_;
+  } else {
+    domain = defaultDomain;
+    config = {};
+  }
+
   const $opened = domain.createStore(Boolean(false));
   const $params = domain.createStore<Record<string, string>>({});
   const $query = domain.createStore<Record<string, string>>({});
 
   const hatch = {
-    enter: domain.createEvent<HatchParams>(),
-    update: domain.createEvent<HatchParams>(),
-    exit: domain.createEvent<void>(),
+    enter: config.enter ?? domain.createEvent<HatchParams>(),
+    update: config.update ?? domain.createEvent<HatchParams>(),
+    exit: config.exit ?? domain.createEvent<void>(),
     $opened,
     $params,
     $query,
@@ -50,7 +70,7 @@ export function createHatch(domain: Domain = defaultDomain): Hatch {
   $params.on([hatch.enter, hatch.update], (_, { params }) => params);
   $query.on([hatch.enter, hatch.update], (_, { query }) => query);
 
-  hatch.$opened.on(hatch.enter, () => Boolean(true)).on(hatch.exit, () => Boolean(false));
+  hatch.$opened.on(hatch.enter, () => Boolean(true)).reset(hatch.exit);
   // Developer may want to read props when user leaves the page
   // if $opened store will reset on hatch.exit, data will be deleted
 
