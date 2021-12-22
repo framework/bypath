@@ -41,14 +41,19 @@ export function createNavigation(
     historyPush.use((url) => history.push(url));
     historyReplace.use((url) => history.replace(url));
     historyPushSearch.use((search) => history.push({ search }));
-    
+
     historyEmitCurrent.watch(() => {
-      const historyChangedBound = scopeBind(historyChanged);
-      
+      let historyChangedBound: (payload: HistoryChange) => void;
+      try {
+        historyChangedBound = scopeBind(historyChanged);
+      } catch (_) {
+        historyChangedBound = (p) => historyChanged(p);
+      }
+
       history.listen(({ pathname, search, hash }, action) => {
         historyChangedBound({ pathname, search, hash, action });
       });
-    })
+    });
   }
 
   if (trackRedirects) {
