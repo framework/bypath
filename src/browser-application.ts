@@ -58,122 +58,49 @@ export function createBrowserApplication(config: {
     const hatchUpdate = domain.createEvent<HatchParams>({ name: `hatchUpdate:${path}` });
     const hatchExit = domain.createEvent<void>({ name: `hatchExit:${path}` });
 
-    // Triggered when hatch is used from the main bundle
-    const dontNeedLoadChunk = domain.createEvent({ name: `dontNeedLoadChunk:${path}` });
-
-    const $chunkLoaded = domain.createStore(false, { name: `$chunkLoaded:${path}` });
-    const $hasHatch = domain.createStore(getHatch(component) !== undefined, {
-      name: `$hasHatch:${path}`,
-    });
-
-    const loadPageFx = domain.createEffect({
-      name: `loadPageFx:${path}`,
-      handler: async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const loader = (component as any).load;
-        if (typeof loader === 'function') {
-          const module = await loader();
-          if (!module.default) {
-            console.info(`Not found default export for "${path}" route`);
-            return null;
-          }
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          return module.default as {};
-        }
-        return component;
-      },
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setupHatchLinksFx = domain.createEffect({
-      name: `setupHatchLinksFx:${path}`,
-      handler: (page: any) => {
-        const hatch = getHatch(page);
-        if (hatch) {
-          forward({ from: hatchEnter, to: hatch.enter });
-          forward({ from: hatchUpdate, to: hatch.update });
-          forward({ from: hatchExit, to: hatch.exit });
-          // Refork here?
-          // Because computations still in the old scope, we can't switch to a new scope where page's events already forked
-          // We need effector v22
-          // https://share.effector.dev/HEXzaOU0
-          return true;
-        }
-        return false;
-      },
-    });
+    const componentHatch = getHatch(component);
+    if (componentHatch) {
+      forward({ from: hatchEnter, to: componentHatch.enter });
+      forward({ from: hatchUpdate, to: componentHatch.update });
+      forward({ from: hatchExit, to: componentHatch.exit });
+    }
 
     // Shows that user is on the route
-    const $onRoute = domain
-      .createStore(false, { name: `$onRoute:${path}` })
-      .on(routeMatched, () => true)
-      .on(notMatched, () => false);
+    const $onRoute = domain.createStore(false, { name: `$onRoute:${path}` });
 
-    // Shows that user visited route and wait for page
-    // If true, page.hatch.enter is triggered and logic is ran
-    const $onPage = domain
-      .createStore(false, { name: `$onPage:${path}` })
-      .on(hatchEnter, () => true)
-      .on(hatchExit, () => false);
+    // Shows that user visited route and waited for page
+    // If true, page.hatch.enter is triggered and logic was run
+    const $onPage = domain.createStore(false, { name: `$onPage:${path}` });
 
-    $chunkLoaded.on(loadPageFx.done, () => true).on(dontNeedLoadChunk, () => true);
-    $hasHatch.on(setupHatchLinksFx.doneData, (_, has) => has);
-
-    // When hatch not found on component from route and chunk don't load before
-    guard({
-      source: routeMatched,
-      filter: combine(
-        $hasHatch,
-        $chunkLoaded,
-        (hasHatch, chunkLoaded) => !hasHatch && !chunkLoaded,
-      ),
-      target: loadPageFx,
-    });
-
-    // After loading page chunk check that it has Page and try to connect with local events
-    guard({
-      source: loadPageFx.doneData,
-      filter: (value) => value !== null,
-      target: setupHatchLinksFx,
-    });
-
-    loadPageFx.failData.watch((error) => {
-      console.error(`Failed to load page for ${path}`, error);
-    });
-
-    setupHatchLinksFx.failData.watch((error) => {
-      console.error(`Failed to setup hatch links for ${path}`, error);
-    });
-
-    // Hatch found on component from route, but chunk never loaded
-    // We need to setup connections between hatch from component and local triggers
-    guard({
-      source: routeMatched,
-      filter: combine($hasHatch, $chunkLoaded, (hasHatch, chunkLoaded) => hasHatch && !chunkLoaded),
-      target: [setupHatchLinksFx.prepend(() => component), dontNeedLoadChunk],
-    });
-
-    // Trigger local unit only after loading chunk and setup connections
-    // Set onPage = true
-    guard({
-      source: routeMatched,
-      clock: setupHatchLinksFx.doneData,
-      filter: $onRoute,
-      target: hatchEnter,
-    });
+    //#region route matched
+    $onRoute.on(routeMatched, () => true);
 
     guard({
-      source: routeMatched,
+      clock: routeMatched,
       filter: $onPage,
       target: hatchUpdate,
     });
 
-    // onPage = false should set only after exit logic is run
     guard({
-      source: notMatched,
+      clock: routeMatched,
+      filter: combine($onPage, $onRoute, (page, route) => !page && route),
+      target: hatchEnter,
+    });
+
+    $onPage.on(hatchEnter, () => true);
+    //#endregion route matched
+
+    //#region NOT matched
+    $onRoute.on(notMatched, () => false);
+
+    guard({
+      clock: notMatched,
       filter: $onPage,
       target: hatchExit,
     });
+
+    $onPage.on(hatchExit, () => false);
+    //#endregion NOT matched
   }
 
   return { navigation };
