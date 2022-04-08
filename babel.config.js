@@ -1,9 +1,9 @@
-const presets = ['@babel/preset-react', '@babel/preset-typescript'];
+const presets = ['@babel/preset-react', '@babel/preset-typescript', 'patronum/babel-preset'];
 
 const common = {
   presets,
   plugins: [
-    ['effector/babel-plugin', { factories: ['src/contract', 'src/logical', 'patronum/split-map'] }],
+    ['effector/babel-plugin', { factories: ['src/contract', 'src/logical'] }],
     ['@babel/plugin-proposal-class-properties', { loose: true }],
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-proposal-optional-chaining',
