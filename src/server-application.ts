@@ -1,9 +1,8 @@
 import createDebug from 'debug';
 import { Domain, sample } from 'effector';
 import { RouteConfig, matchRoutes } from 'react-router-config';
-import { splitMap } from 'patronum';
+import { splitMap } from 'patronum/split-map';
 
-import { HatchParams, getHatch } from './hatch';
 import { createNavigation } from './navigation';
 import { defaultDomain } from './default-domain';
 

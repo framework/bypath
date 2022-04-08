@@ -1,4 +1,4 @@
-import { Domain, merge, sample, scopeBind } from 'effector';
+import { Domain, sample, scopeBind } from 'effector';
 import { createBrowserHistory, createMemoryHistory } from 'history';
 
 export interface HistoryChange {

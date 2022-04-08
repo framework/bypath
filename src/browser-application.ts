@@ -1,6 +1,6 @@
 import { Domain, Event, combine, forward, guard } from 'effector';
 import { RouteConfig, matchRoutes } from 'react-router-config';
-import { splitMap } from 'patronum';
+import { splitMap } from 'patronum/split-map';
 
 import { HatchParams, getHatch } from './hatch';
 import { createNavigation } from './navigation';
