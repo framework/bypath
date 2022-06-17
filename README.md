@@ -1,18 +1,18 @@
-# framework
+# bypath
 
 Simple framework for React, TypeScript and effector applications.
 
 ## Installation
 
 ```bash
-npm install framework
+npm install bypath
 ```
 
 ## Usage
 
 ```ts
 // index.ts
-import { createBrowserApplication } from 'framework';
+import { createBrowserApplication } from 'bypath';
 import { createEvent } from 'effector';
 
 import * as navigation from 'entities/navigation';
@@ -46,7 +46,7 @@ forward({
 
 ```ts
 // some-page/contract.ts
-import { createHatch } from 'framework';
+import { createHatch } from 'bypath';
 
 import { navigationDomain } from 'entities/navigation';
 
@@ -58,7 +58,7 @@ export const hatch = createHatch(navigationDomain);
 ```ts
 // some-page/index.tsx
 import { guard, createDomain } from 'effector';
-import { withHatch } from 'framework';
+import { withHatch } from 'bypath';
 
 import { historyPush } from 'entities/navigation';
 import { $isAuthenticated } from 'entities/session';
