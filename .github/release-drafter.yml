@@ -1,12 +1,4 @@
 categories:
-  - title: 🎨 Theme
-    labels:
-      - '@theme'
-
-  - title: 🌦 Example
-    labels:
-      - '@example'
-
   - title: '⚠️ Breaking changes'
     label: 'BREAKING CHANGES'
 
@@ -25,7 +17,6 @@ categories:
     labels:
       - 'chore'
       - 'dependencies'
-      - 'ci'
 
   - title: '📚 Documentation'
     label: 'documentation'
@@ -44,13 +35,9 @@ version-resolver:
     labels:
       - 'feature'
       - 'enhancement'
-      - 'dependencies'
   patch:
     labels:
       - 'fix'
-      - 'bugfix'
-      - 'bug'
-      - 'optimizations'
   default: patch
 
 name-template: 'v$RESOLVED_VERSION'
