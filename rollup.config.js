@@ -45,7 +45,7 @@ export default [
       'patronum',
     ],
     output: {
-      name: 'framework',
+      name: 'bypath',
       file: pkg.unpkg,
       format: 'umd',
       sourcemap: true,

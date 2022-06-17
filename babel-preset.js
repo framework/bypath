@@ -5,9 +5,9 @@ module.exports = function () {
         'effector/babel-plugin',
         {
           noDefaults: true,
-          factories: ['framework'],
+          factories: ['bypath'],
         },
-        'framework',
+        'bypath',
       ],
     ],
   };
