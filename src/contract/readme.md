@@ -1,6 +1,10 @@
-# lib/contract
+# `contract`
 
 ## Usage
+
+```ts
+import { contract } from 'bypath';
+```
 
 Create a model in a `model.ts` file and export all effector units:
 
@@ -92,7 +96,7 @@ const Increment = reflect({
 Now you can connect the model with the page, create `index.ts` file:
 
 ```ts
-import { contract } from 'lib/contract';
+import { contract } from 'bypath';
 import * as model from './model';
 import * as page from './page';
 
