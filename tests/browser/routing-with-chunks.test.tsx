@@ -4,7 +4,7 @@ import { allSettled, fork } from 'effector';
 import { $pageName, root } from './fixtures/internal';
 import { createBrowserApplication, loadable } from '../../src';
 
-test.skip('triggering hatch loaded from chunk', async () => {
+test.skip('triggering route loaded from chunk', async () => {
   const routes = [
     {
       path: '/page1',
