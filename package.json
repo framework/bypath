@@ -1,11 +1,11 @@
 {
-  "name": "framework",
+  "name": "bypath",
   "version": "0.1.0",
-  "description": "Framework for TypeScript applications",
-  "main": "dist/framework.cjs.js",
-  "module": "dist/framework.esm.js",
-  "unpkg": "dist/framework.umd.js",
-  "types": "dist/framework.d.ts",
+  "description": "Build effector and react applications with ease",
+  "main": "dist/bypath.cjs.js",
+  "module": "dist/bypath.esm.js",
+  "unpkg": "dist/bypath.umd.js",
+  "types": "dist/bypath.d.ts",
   "sideEffects": false,
   "scripts": {
     "test": "jest",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/framework/framework.git"
+    "url": "git+https://github.com/framework/bypath.git"
   },
   "files": [
     "dist",
@@ -28,14 +28,15 @@
     "slices",
     "typescript",
     "framework",
-    "plugins"
+    "plugins",
+    "bypath"
   ],
   "author": "Sergey Sova <mail@sergeysova.com> (https://github.com/framework)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/framework/framework/issues"
+    "url": "https://github.com/framework/bypath/issues"
   },
-  "homepage": "https://github.com/framework/framework#readme",
+  "homepage": "https://github.com/framework/bypath#readme",
   "dependencies": {
     "@loadable/component": "^5.15.0",
     "debug": "^4.3.2"
