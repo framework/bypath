@@ -7,7 +7,7 @@ import { createNavigation } from './navigation';
 import { defaultDomain } from './default-domain';
 
 export function createServerApplication(config: { routes: RouteConfig[]; domain?: Domain }) {
-  const debug = createDebug('framework-server');
+  const debug = createDebug('bypath/server');
   const domain = config.domain || defaultDomain;
   const navigation = createNavigation(domain, { emitHistory: false, trackRedirects: true });
 

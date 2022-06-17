@@ -1,19 +1,19 @@
 import React from 'react';
 import { sample } from 'effector';
 
-import { createHatch, withHatch } from '../../../src';
+import { createRoute, withRoute } from '../../../src';
 import { pageNameSet, root } from './internal';
 
-const hatch = createHatch(root);
+const route = createRoute(root);
 
-const PageAnother = withHatch(hatch, () => {
+const PageAnother = withRoute(route, () => {
   return <div>For example just another page</div>;
 });
 
 export default PageAnother;
 
 sample({
-  source: hatch.enter,
+  source: route.enter,
   fn: () => 'page-another',
   target: pageNameSet,
 });

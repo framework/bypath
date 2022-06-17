@@ -2,7 +2,7 @@ import { Domain, Event, combine, forward, guard } from 'effector';
 import { RouteConfig, matchRoutes } from 'react-router-config';
 import { splitMap } from 'patronum/split-map';
 
-import { HatchParams, getHatch } from './hatch';
+import { RouteParams, getRoute } from './routing';
 import { createNavigation } from './navigation';
 import { defaultDomain } from './default-domain';
 
@@ -54,15 +54,15 @@ export function createBrowserApplication(config: {
       },
     });
 
-    const hatchEnter = domain.createEvent<HatchParams>({ name: `hatchEnter:${path}` });
-    const hatchUpdate = domain.createEvent<HatchParams>({ name: `hatchUpdate:${path}` });
-    const hatchExit = domain.createEvent<void>({ name: `hatchExit:${path}` });
+    const pageRouteEnter = domain.createEvent<RouteParams>({ name: `routeEnter:${path}` });
+    const pageRouteUpdate = domain.createEvent<RouteParams>({ name: `routeUpdate:${path}` });
+    const pageRouteExit = domain.createEvent<void>({ name: `routeExit:${path}` });
 
-    const componentHatch = getHatch(component);
-    if (componentHatch) {
-      forward({ from: hatchEnter, to: componentHatch.enter });
-      forward({ from: hatchUpdate, to: componentHatch.update });
-      forward({ from: hatchExit, to: componentHatch.exit });
+    const pageRoute = getRoute(component);
+    if (pageRoute) {
+      forward({ from: pageRouteEnter, to: pageRoute.enter });
+      forward({ from: pageRouteUpdate, to: pageRoute.update });
+      forward({ from: pageRouteExit, to: pageRoute.exit });
     }
 
     // Shows that user is on the route
@@ -78,16 +78,16 @@ export function createBrowserApplication(config: {
     guard({
       clock: routeMatched,
       filter: $onPage,
-      target: hatchUpdate,
+      target: pageRouteUpdate,
     });
 
     guard({
       clock: routeMatched,
       filter: combine($onPage, $onRoute, (page, route) => !page && route),
-      target: hatchEnter,
+      target: pageRouteEnter,
     });
 
-    $onPage.on(hatchEnter, () => true);
+    $onPage.on(pageRouteEnter, () => true);
     //#endregion route matched
 
     //#region NOT matched
@@ -96,10 +96,10 @@ export function createBrowserApplication(config: {
     guard({
       clock: notMatched,
       filter: $onPage,
-      target: hatchExit,
+      target: pageRouteExit,
     });
 
-    $onPage.on(hatchExit, () => false);
+    $onPage.on(pageRouteExit, () => false);
     //#endregion NOT matched
   }
 

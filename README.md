@@ -46,31 +46,31 @@ forward({
 
 ```ts
 // some-page/contract.ts
-import { createHatch } from 'bypath';
+import { createRoute } from 'bypath';
 
 import { navigationDomain } from 'entities/navigation';
 
-export const hatch = createHatch(navigationDomain);
+export const route = createRoute(navigationDomain);
 // domain is optional
 // for debug/logging
 ```
 
 ```ts
 // some-page/index.tsx
-import { guard, createDomain } from 'effector';
-import { withHatch } from 'bypath';
+import { sample, createDomain } from 'effector';
+import { withRoute } from 'bypath';
 
 import { historyPush } from 'entities/navigation';
 import { $isAuthenticated } from 'entities/session';
 
-import { hatch } from './contract';
+import { route } from './contract';
 
-export const Page = withHatch(hatch, () => {
+export const Page = withRoute(route, () => {
   //...
 });
 
-guard({
-  source: hatch.enter,
+sample({
+  source: route.enter,
   filter: $isAuthenticated.map((is) => !is),
   target: historyPush.prepend(() => '/login')
 });

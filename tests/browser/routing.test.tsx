@@ -1,14 +1,14 @@
 import React from 'react';
 import { Effect, Event, Store, createEvent } from 'effector';
 
-import { createBrowserApplication, createHatch, withHatch } from '../../src';
+import { createBrowserApplication, createRoute, withRoute } from '../../src';
 
-test('check triggering hatch without binding to domain', () => {
-  const homePageHatch = createHatch();
-  const HomePage = withHatch(homePageHatch, () => <div>Home page</div>);
+test('check triggering route without binding to domain', () => {
+  const homePageHatch = createRoute();
+  const HomePage = withRoute(homePageHatch, () => <div>Home page</div>);
 
-  const notFoundPageHatch = createHatch();
-  const NotFoundPage = withHatch(notFoundPageHatch, () => <span>Not found</span>);
+  const notFoundPageHatch = createRoute();
+  const NotFoundPage = withRoute(notFoundPageHatch, () => <span>Not found</span>);
   const routes = [
     {
       path: '/',
@@ -48,11 +48,11 @@ test('check triggering hatch without binding to domain', () => {
 });
 
 test('trigger hatch on enter and leave', () => {
-  const hatchHomePage = createHatch();
-  const HomePage = withHatch(hatchHomePage, () => <div>Home page</div>);
+  const hatchHomePage = createRoute();
+  const HomePage = withRoute(hatchHomePage, () => <div>Home page</div>);
 
-  const hatchNotFoundPage = createHatch();
-  const NotFoundPage = withHatch(hatchNotFoundPage, () => <span>Not found</span>);
+  const hatchNotFoundPage = createRoute();
+  const NotFoundPage = withRoute(hatchNotFoundPage, () => <span>Not found</span>);
   const routes = [
     {
       path: '/',

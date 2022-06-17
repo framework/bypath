@@ -1,3 +1,3 @@
 import { createDomain } from 'effector';
 
-export const defaultDomain = createDomain('framework/default');
+export const defaultDomain = createDomain('bypath/default');
